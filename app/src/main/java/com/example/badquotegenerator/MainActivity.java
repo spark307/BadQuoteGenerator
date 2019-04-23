@@ -6,14 +6,15 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.content.Intent;
 
+import java.lang.reflect.GenericArrayType;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
-
+Button switchUI;
     /** Default logging tag for messages from the main activity. */
     private static final String TAG = "Bad Quotes";
-
     private String[] quotes = {"Some list", "second list", "alsdkjflsadjf"};
     private String[] people = {"George Washington", "Obama", "The queen"};
     private String combineText;
@@ -32,6 +33,10 @@ public class MainActivity extends AppCompatActivity {
             setTextView();
         });
 
+        final Button switchUI = findViewById(R.id.switchToSetup);
+        switchUI.setOnClickListener(v -> {
+            switchScreen();
+        });
 
     }
 
@@ -54,5 +59,10 @@ public class MainActivity extends AppCompatActivity {
     }
     public void setTextView() {
         quoteText.setText(getText());
+    }
+    void switchScreen() {
+        Intent intent = new Intent(MainActivity.this, generator.class);
+        startActivity(intent);
+        finish();
     }
 }
