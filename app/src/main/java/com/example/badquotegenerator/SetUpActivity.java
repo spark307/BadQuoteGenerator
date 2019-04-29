@@ -51,7 +51,6 @@ public class SetUpActivity extends AppCompatActivity implements AdapterView.OnIt
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if(parent.getId() == R.id.fontSpinner) {
             fontChoice = parent.getItemAtPosition(position).toString();
-            Toast.makeText(parent.getContext(), fontChoice, Toast.LENGTH_SHORT).show();
         }
         else if(parent.getId() == R.id.sizeSpinner) {
             sizeChoice = parent.getItemAtPosition(position).toString();

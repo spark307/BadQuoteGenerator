@@ -2,11 +2,11 @@
     <string name="app_name">Bad Quote Generator</string>
 
     <string-array name="Fonts">
-        <item>alice</item>
-        <item>sacramento</item>
-        <item>caveat_bold</item>
-        <item>volkhov</item>
-        <item>aladin</item>
+        <item>Alice</item>
+        <item>Sacramento</item>
+        <item>Caveat Bold</item>
+        <item>Volkhov</item>
+        <item>Aladin</item>
     </string-array>
     <string-array name="FontSize">
         <item>Small</item>

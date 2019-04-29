@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -25,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     TextView quoteText;
     Typeface typeface;
     private static RequestQueue requestQueue;
+    String quoteContent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,13 +39,13 @@ public class MainActivity extends AppCompatActivity {
         String ourFont = intent.getStringExtra("FontChoice");
         String ourSize = intent.getStringExtra("SizeChoice");
 
-        if (ourFont.equals("alice")) {
+        if (ourFont.equals("Alice")) {
             typeface = ResourcesCompat.getFont(this, R.font.alice);
-        } else if (ourFont.equals("sacramento")) {
+        } else if (ourFont.equals("Sacramento")) {
             typeface = ResourcesCompat.getFont(this, R.font.sacramento);
-        } else if (ourFont.equals("caveat_bold")) {
+        } else if (ourFont.equals("Caveat Bold")) {
             typeface = ResourcesCompat.getFont(this, R.font.caveat_bold);
-        } else if (ourFont.equals("volkhov")) {
+        } else if (ourFont.equals("Volkhov")) {
             typeface = ResourcesCompat.getFont(this, R.font.volkhov);
         } else {
             typeface = ResourcesCompat.getFont(this, R.font.aladin);
@@ -72,6 +74,14 @@ public class MainActivity extends AppCompatActivity {
             switchScreen();
         });
 
+        final ImageButton imageButtonShare = findViewById(R.id.imageButtonShare);
+        imageButtonShare.setOnClickListener(v -> {
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.putExtra(Intent.EXTRA_TEXT, "Check out this famous quote! " + quoteContent);
+            sendIntent.setType("text/plain");
+            startActivity(Intent.createChooser(sendIntent, "Share"));
+        });
     }
 
     public String getQuote(final JSONObject response) {
@@ -92,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void setTextView(final JSONObject response) {
         quoteText.setText(getText(response));
+        quoteContent = "\"" + getQuote(response) + "\"" + " - " + getPeople(response);
     }
 
     void switchScreen() {
