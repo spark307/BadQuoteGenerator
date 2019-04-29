@@ -3,46 +3,27 @@ package com.example.badquotegenerator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.content.Intent;
-
-import android.util.Log;
+import android.graphics.Typeface;
+import android.support.v4.content.res.ResourcesCompat;
+import android.util.TypedValue;
 
 import org.json.JSONObject;
 
-import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.gson.JsonObject;
 
-import org.json.JSONException;
-
-import java.net.HttpURLConnection;
-
-import java.util.HashMap;
-
-import java.util.Map;
-
-import java.lang.reflect.GenericArrayType;
-import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
-Button switchUI;
     /** Default logging tag for messages from the main activity. */
-    private static final String TAG = "Bad Quotes";
-    private String[] quotes = {"Some list", "second list", "alsdkjflsadjf"};
-    private String[] people = {"George Washington", "Obama", "The queen"};
+    private static final String TAG = "Good Quotes";
     TextView quoteText;
-
+    Typeface typeface;
     private static RequestQueue requestQueue;
 
     @Override
@@ -51,6 +32,32 @@ Button switchUI;
         setContentView(R.layout.activity_main);
 
         quoteText = findViewById(R.id.quoteText);
+
+        Intent intent = getIntent();
+        String ourFont = intent.getStringExtra("FontChoice");
+        String ourSize = intent.getStringExtra("SizeChoice");
+
+        if (ourFont.equals("alice")) {
+            typeface = ResourcesCompat.getFont(this, R.font.alice);
+        } else if (ourFont.equals("sacramento")) {
+            typeface = ResourcesCompat.getFont(this, R.font.sacramento);
+        } else if (ourFont.equals("caveat_bold")) {
+            typeface = ResourcesCompat.getFont(this, R.font.caveat_bold);
+        } else if (ourFont.equals("volkhov")) {
+            typeface = ResourcesCompat.getFont(this, R.font.volkhov);
+        } else {
+            typeface = ResourcesCompat.getFont(this, R.font.aladin);
+        }
+
+        if (ourSize.equals("Small")) {
+            quoteText.setTextSize(TypedValue.COMPLEX_UNIT_SP,15);
+        } else if (ourSize.equals("Medium")) {
+            quoteText.setTextSize(TypedValue.COMPLEX_UNIT_SP,25);
+        } else {
+            quoteText.setTextSize(TypedValue.COMPLEX_UNIT_SP,35);
+        }
+
+        quoteText.setTypeface(typeface);
 
         requestQueue = Volley.newRequestQueue(this);
 
@@ -67,25 +74,10 @@ Button switchUI;
 
     }
 
-
-//    public String getQuote() {
-//        int randomIndex;
-//        Random random = new Random();
-//        randomIndex = random.nextInt(quotes.length);
-//        return quotes[randomIndex];
-//    }
-
     public String getQuote(final JSONObject response) {
         String input = response.toString();
         return ParseJson.getQuote(input);
     }
-
-//    public String getPeople() {
-//        int randomIndex;
-//        Random random = new Random();
-//        randomIndex = random.nextInt(people.length);
-//        return people[randomIndex];
-//    }
 
     public String getPeople(final JSONObject response) {
         String input = response.toString();
@@ -103,23 +95,8 @@ Button switchUI;
     }
 
     void switchScreen() {
-        Intent intent = new Intent(MainActivity.this, generator.class);
+        Intent intent = new Intent(MainActivity.this, SetUpActivity.class);
         startActivity(intent);
-        finish();
-    }
-
-    private JSONObject getParams() {
-        JSONObject parameters = new JSONObject();
-
-        try {
-            parameters.put("method", "getQuote");
-            parameters.put("format", "json");
-            parameters.put("lang", "en");
-        } catch (JSONException e){
-            Log.e("MYAPP", "unexpected JSON exception", e);
-        }
-        System.out.println(parameters);
-        return parameters;
     }
 
     void postRequest() {
@@ -128,18 +105,9 @@ Button switchUI;
                     Request.Method.GET,
                     "http://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=en",
                     null,
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(final JSONObject response) {
-                            Log.d(TAG, response.toString());
-                            setTextView(response);
-                        }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(final VolleyError error) {
-                    Log.w(TAG, "Error: " + error.toString());
-                }
-            });
+                    this::handleApiResponse,
+                    this::handleApiError
+                );
             requestQueue.add(jsonObjectRequest);
         } catch (Exception e) {
             e.printStackTrace();
@@ -148,14 +116,10 @@ Button switchUI;
 
     void handleApiResponse(final JSONObject response) {
         Log.d(TAG, response.toString());
-        System.out.println(1);
         setTextView(response);
     }
 
     void handleApiError(final VolleyError error) {
-        // On failure just clear the progress bar
-        System.out.println(2);
         Log.w(TAG, "Error: " + error.toString());
-
     }
 }

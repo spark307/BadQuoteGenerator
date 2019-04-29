@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">Bad Quote Generator</string>
+
+    <string-array name="Fonts">
+        <item>alice</item>
+        <item>sacramento</item>
+        <item>caveat_bold</item>
+        <item>volkhov</item>
+        <item>aladin</item>
+    </string-array>
+    <string-array name="FontSize">
+        <item>Small</item>
+        <item>Medium</item>
+        <item>Large</item>
+    </string-array>
 </resources>
